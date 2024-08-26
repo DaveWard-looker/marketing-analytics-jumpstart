@@ -17,7 +17,7 @@ have plenty of disk space before continuing the installation.
 If that is not your case, following the Cloud Shell documentation to [reset your Cloud Shell](https://cloud.google.com/shell/docs/resetting-cloud-shell).
 
 ## Installation Guide
-Step by step installation guide with [![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://shell.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/GoogleCloudPlatform/marketing-analytics-jumpstart.git&cloudshell_git_branch=main&cloudshell_workspace=&cloudshell_tutorial=infrastructure/cloudshell/tutorial.md)
+Step by step installation guide with [![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://shell.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/DaveWard-looker/marketing-analytics-jumpstart.git&cloudshell_git_branch=main&cloudshell_workspace=&cloudshell_tutorial=infrastructure/cloudshell/tutorial.md)
 
 **Note:** If you are working from a forked repository, be sure to update the `cloudshell_git_repo` parameter to the URL of your forked repository for the button link above.
 
@@ -28,7 +28,7 @@ Step by step installation guide with [![Open in Cloud Shell](https://gstatic.com
     ```bash
     REPO="marketing-analytics-jumpstart"
     cd $HOME
-    git clone https://github.com/GoogleCloudPlatform/${REPO}.git
+    git clone https://github.com/DaveWard-looker/${REPO}.git
     ```
 
 1. If you don't use Cloud Shell, export environment variables and set the default project.
@@ -211,7 +211,7 @@ At this time, the Terraform scripts in this folder perform the following tasks:
 - Dataform repository connected to the GitHub repo
 - Deploys the marketing data store (MDS), feature store, ML pipelines and activation application
 
-The Looker Studio Dashboard deployment is a separate [step](https://github.com/GoogleCloudPlatform/marketing-analytics-jumpstart/blob/main/python/lookerstudio/README.md).
+The Looker Studio Dashboard deployment is a separate [step](https://github.com/DaveWard-looker/marketing-analytics-jumpstart/blob/main/python/lookerstudio/README.md).
 
 ## Post-Installation Instructions
 
