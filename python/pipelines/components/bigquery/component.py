@@ -54,9 +54,22 @@ def bq_stored_procedure_exec(
     from google.cloud import bigquery
     import logging
 
+    from google.api_core.gapic_v1.client_info import ClientInfo
+
+    USER_AGENT_FEATURES = 'cloud-solutions/marketing-analytics-jumpstart-features-v1'
+    USER_AGENT_PROPENSITY_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-propensity-training-v1'
+    USER_AGENT_PROPENSITY_PREDICTION= 'cloud-solutions/marketing-analytics-jumpstart-propensity-prediction-v1'
+    USER_AGENT_REGRESSION_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-regression-training-v1'
+    USER_AGENT_REGRESSION_PREDICTION = 'cloud-solutions/marketing-analytics-jumpstart-regression-prediction-v1'
+    USER_AGENT_SEGMENTATION_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-segmentation-training-v1'
+    USER_AGENT_SEGMENTATION_PREDICTION = 'cloud-solutions/marketing-analytics-jumpstart-segmentation-prediction-v1'
+    USER_AGENT_VBB_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-vbb-training-v1'
+    USER_AGENT_VBB_EXPLANATION = 'cloud-solutions/marketing-analytics-jumpstart-vbb-explanation-v1'
+
     client = bigquery.Client(
         project=project,
-        location=location
+        location=location,
+        client_info=ClientInfo(user_agent=USER_AGENT_FEATURES)
     )
 
     params = []
@@ -125,6 +138,19 @@ def bq_clustering_exec(
     from google.cloud import bigquery
     import logging
     from datetime import datetime
+    
+    from google.api_core.gapic_v1.client_info import ClientInfo
+
+    USER_AGENT_FEATURES = 'cloud-solutions/marketing-analytics-jumpstart-features-v1'
+    USER_AGENT_PROPENSITY_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-propensity-training-v1'
+    USER_AGENT_PROPENSITY_PREDICTION= 'cloud-solutions/marketing-analytics-jumpstart-propensity-prediction-v1'
+    USER_AGENT_REGRESSION_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-regression-training-v1'
+    USER_AGENT_REGRESSION_PREDICTION = 'cloud-solutions/marketing-analytics-jumpstart-regression-prediction-v1'
+    USER_AGENT_SEGMENTATION_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-segmentation-training-v1'
+    USER_AGENT_SEGMENTATION_PREDICTION = 'cloud-solutions/marketing-analytics-jumpstart-segmentation-prediction-v1'
+    USER_AGENT_VBB_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-vbb-training-v1'
+    USER_AGENT_VBB_EXPLANATION = 'cloud-solutions/marketing-analytics-jumpstart-vbb-explanation-v1'
+
 
     model_bq_name = f"{model_name_bq_prefix}_{str(int(datetime.now().timestamp()))}"
 
@@ -185,7 +211,8 @@ def bq_clustering_exec(
 
     client = bigquery.Client(
         project=project_id,
-        location=location
+        location=location,
+        client_info=ClientInfo(user_agent=USER_AGENT_SEGMENTATION_TRAINING)
     )
     
     logging.info(f"BQML Model Training Query: {query}")
@@ -224,6 +251,19 @@ def bq_evaluate(
 
     from google.cloud import bigquery
     import json, google.auth, logging
+    
+    from google.api_core.gapic_v1.client_info import ClientInfo
+
+    USER_AGENT_FEATURES = 'cloud-solutions/marketing-analytics-jumpstart-features-v1'
+    USER_AGENT_PROPENSITY_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-propensity-training-v1'
+    USER_AGENT_PROPENSITY_PREDICTION= 'cloud-solutions/marketing-analytics-jumpstart-propensity-prediction-v1'
+    USER_AGENT_REGRESSION_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-regression-training-v1'
+    USER_AGENT_REGRESSION_PREDICTION = 'cloud-solutions/marketing-analytics-jumpstart-regression-prediction-v1'
+    USER_AGENT_SEGMENTATION_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-segmentation-training-v1'
+    USER_AGENT_SEGMENTATION_PREDICTION = 'cloud-solutions/marketing-analytics-jumpstart-segmentation-prediction-v1'
+    USER_AGENT_VBB_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-vbb-training-v1'
+    USER_AGENT_VBB_EXPLANATION = 'cloud-solutions/marketing-analytics-jumpstart-vbb-explanation-v1'
+
 
     query = f"""SELECT * FROM ML.EVALUATE(MODEL `{model.metadata["projectId"]}.{model.metadata["datasetId"]}.{model.metadata["modelId"]}`)"""
     
@@ -286,6 +326,19 @@ def bq_select_best_kmeans_model(
     import logging
     from enum import Enum
 
+    from google.api_core.gapic_v1.client_info import ClientInfo
+
+    USER_AGENT_FEATURES = 'cloud-solutions/marketing-analytics-jumpstart-features-v1'
+    USER_AGENT_PROPENSITY_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-propensity-training-v1'
+    USER_AGENT_PROPENSITY_PREDICTION= 'cloud-solutions/marketing-analytics-jumpstart-propensity-prediction-v1'
+    USER_AGENT_REGRESSION_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-regression-training-v1'
+    USER_AGENT_REGRESSION_PREDICTION = 'cloud-solutions/marketing-analytics-jumpstart-regression-prediction-v1'
+    USER_AGENT_SEGMENTATION_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-segmentation-training-v1'
+    USER_AGENT_SEGMENTATION_PREDICTION = 'cloud-solutions/marketing-analytics-jumpstart-segmentation-prediction-v1'
+    USER_AGENT_VBB_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-vbb-training-v1'
+    USER_AGENT_VBB_EXPLANATION = 'cloud-solutions/marketing-analytics-jumpstart-vbb-explanation-v1'
+
+
     class MetricsEnum(Enum):
         DAVIES_BOULDIN_INDEX = 'davies_bouldin_index'
         MEAN_SQUARED_DISCTANCE = 'mean_squared_distance'
@@ -300,7 +353,8 @@ def bq_select_best_kmeans_model(
     # Construct a BigQuery client object.
     client = bigquery.Client(
         project=project_id,
-        location=location
+        location=location,
+        client_info=ClientInfo(user_agent=USER_AGENT_SEGMENTATION_PREDICTION)
     )
 
     # TODO(developer): Set dataset_id to the ID of the dataset that contains
@@ -404,13 +458,27 @@ def bq_clustering_predictions(
     from google.cloud import bigquery
     import logging
 
+    from google.api_core.gapic_v1.client_info import ClientInfo
+
+    USER_AGENT_FEATURES = 'cloud-solutions/marketing-analytics-jumpstart-features-v1'
+    USER_AGENT_PROPENSITY_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-propensity-training-v1'
+    USER_AGENT_PROPENSITY_PREDICTION= 'cloud-solutions/marketing-analytics-jumpstart-propensity-prediction-v1'
+    USER_AGENT_REGRESSION_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-regression-training-v1'
+    USER_AGENT_REGRESSION_PREDICTION = 'cloud-solutions/marketing-analytics-jumpstart-regression-prediction-v1'
+    USER_AGENT_SEGMENTATION_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-segmentation-training-v1'
+    USER_AGENT_SEGMENTATION_PREDICTION = 'cloud-solutions/marketing-analytics-jumpstart-segmentation-prediction-v1'
+    USER_AGENT_VBB_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-vbb-training-v1'
+    USER_AGENT_VBB_EXPLANATION = 'cloud-solutions/marketing-analytics-jumpstart-vbb-explanation-v1'
+
+
     timestamp = str(int(datetime.now().timestamp()))
     destination_table.metadata["table_id"] = f"{bigquery_destination_prefix}_{timestamp}"
     model_uri = f"{model.metadata['projectId']}.{model.metadata['datasetId']}.{model.metadata['modelId']}"
 
     client = bigquery.Client(
         project=project_id, 
-        location=location
+        location=location,
+        client_info=ClientInfo(user_agent=USER_AGENT_SEGMENTATION_PREDICTION)
     )
 
     query = f"""
@@ -460,10 +528,24 @@ def bq_flatten_tabular_binary_prediction_table(
     from google.cloud import bigquery
     import logging
 
+    from google.api_core.gapic_v1.client_info import ClientInfo
+
+    USER_AGENT_FEATURES = 'cloud-solutions/marketing-analytics-jumpstart-features-v1'
+    USER_AGENT_PROPENSITY_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-propensity-training-v1'
+    USER_AGENT_PROPENSITY_PREDICTION= 'cloud-solutions/marketing-analytics-jumpstart-propensity-prediction-v1'
+    USER_AGENT_REGRESSION_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-regression-training-v1'
+    USER_AGENT_REGRESSION_PREDICTION = 'cloud-solutions/marketing-analytics-jumpstart-regression-prediction-v1'
+    USER_AGENT_SEGMENTATION_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-segmentation-training-v1'
+    USER_AGENT_SEGMENTATION_PREDICTION = 'cloud-solutions/marketing-analytics-jumpstart-segmentation-prediction-v1'
+    USER_AGENT_VBB_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-vbb-training-v1'
+    USER_AGENT_VBB_EXPLANATION = 'cloud-solutions/marketing-analytics-jumpstart-vbb-explanation-v1'
+
+
     # Construct a BigQuery client object.
     client = bigquery.Client(
         project=project_id,
-        location=location
+        location=location,
+        client_info=ClientInfo(user_agent=USER_AGENT_PROPENSITY_PREDICTION)
     )
 
     # Inspect the metadata set on destination_table and predictions_table
@@ -535,7 +617,8 @@ def bq_flatten_tabular_binary_prediction_table(
     # Reconstruct a BigQuery client object.
     client = bigquery.Client(
         project=project_id,
-        location=bq_table.location
+        location=bq_table.location,
+        client_info=ClientInfo(user_agent=USER_AGENT_PROPENSITY_PREDICTION)
     )
     query_job = client.query(
         query=query,
@@ -574,10 +657,24 @@ def bq_flatten_tabular_regression_table(
     from google.cloud import bigquery
     import logging
 
+    from google.api_core.gapic_v1.client_info import ClientInfo
+
+    USER_AGENT_FEATURES = 'cloud-solutions/marketing-analytics-jumpstart-features-v1'
+    USER_AGENT_PROPENSITY_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-propensity-training-v1'
+    USER_AGENT_PROPENSITY_PREDICTION= 'cloud-solutions/marketing-analytics-jumpstart-propensity-prediction-v1'
+    USER_AGENT_REGRESSION_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-regression-training-v1'
+    USER_AGENT_REGRESSION_PREDICTION = 'cloud-solutions/marketing-analytics-jumpstart-regression-prediction-v1'
+    USER_AGENT_SEGMENTATION_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-segmentation-training-v1'
+    USER_AGENT_SEGMENTATION_PREDICTION = 'cloud-solutions/marketing-analytics-jumpstart-segmentation-prediction-v1'
+    USER_AGENT_VBB_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-vbb-training-v1'
+    USER_AGENT_VBB_EXPLANATION = 'cloud-solutions/marketing-analytics-jumpstart-vbb-explanation-v1'
+
+
     # Construct a BigQuery client object.
     client = bigquery.Client(
         project=project_id,
-        location=location
+        location=location,
+        client_info=ClientInfo(user_agent=USER_AGENT_REGRESSION_PREDICTION)
     )
 
     # Inspect the metadata set on destination_table and predictions_table
@@ -617,7 +714,8 @@ def bq_flatten_tabular_regression_table(
     # Reconstruct a BigQuery client object.
     client = bigquery.Client(
         project=project_id,
-        location=bq_table.location
+        location=bq_table.location,
+        client_info=ClientInfo(user_agent=USER_AGENT_REGRESSION_PREDICTION)
     )
     query_job = client.query(
         query=query,
@@ -653,10 +751,24 @@ def bq_flatten_kmeans_prediction_table(
     from google.cloud import bigquery
     import logging
 
+    from google.api_core.gapic_v1.client_info import ClientInfo
+
+    USER_AGENT_FEATURES = 'cloud-solutions/marketing-analytics-jumpstart-features-v1'
+    USER_AGENT_PROPENSITY_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-propensity-training-v1'
+    USER_AGENT_PROPENSITY_PREDICTION= 'cloud-solutions/marketing-analytics-jumpstart-propensity-prediction-v1'
+    USER_AGENT_REGRESSION_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-regression-training-v1'
+    USER_AGENT_REGRESSION_PREDICTION = 'cloud-solutions/marketing-analytics-jumpstart-regression-prediction-v1'
+    USER_AGENT_SEGMENTATION_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-segmentation-training-v1'
+    USER_AGENT_SEGMENTATION_PREDICTION = 'cloud-solutions/marketing-analytics-jumpstart-segmentation-prediction-v1'
+    USER_AGENT_VBB_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-vbb-training-v1'
+    USER_AGENT_VBB_EXPLANATION = 'cloud-solutions/marketing-analytics-jumpstart-vbb-explanation-v1'
+
+
     # Construct a BigQuery client object.
     client = bigquery.Client(
         project=project_id,
-        location=location
+        location=location,
+        client_info=ClientInfo(user_agent=USER_AGENT_SEGMENTATION_PREDICTION)
     )
 
     # Make an API request.
@@ -744,10 +856,24 @@ def bq_dynamic_query_exec_output(
     import jinja2
     import re
 
+    from google.api_core.gapic_v1.client_info import ClientInfo
+
+    USER_AGENT_FEATURES = 'cloud-solutions/marketing-analytics-jumpstart-features-v1'
+    USER_AGENT_PROPENSITY_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-propensity-training-v1'
+    USER_AGENT_PROPENSITY_PREDICTION= 'cloud-solutions/marketing-analytics-jumpstart-propensity-prediction-v1'
+    USER_AGENT_REGRESSION_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-regression-training-v1'
+    USER_AGENT_REGRESSION_PREDICTION = 'cloud-solutions/marketing-analytics-jumpstart-regression-prediction-v1'
+    USER_AGENT_SEGMENTATION_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-segmentation-training-v1'
+    USER_AGENT_SEGMENTATION_PREDICTION = 'cloud-solutions/marketing-analytics-jumpstart-segmentation-prediction-v1'
+    USER_AGENT_VBB_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-vbb-training-v1'
+    USER_AGENT_VBB_EXPLANATION = 'cloud-solutions/marketing-analytics-jumpstart-vbb-explanation-v1'
+
+
     # Construct a BigQuery client object.
     client = bigquery.Client(
         project=project_id,
-        location=location
+        location=location,
+        client_info=ClientInfo(user_agent=USER_AGENT_SEGMENTATION_TRAINING)
     )
 
     # Construct query template
@@ -853,10 +979,24 @@ def bq_dynamic_stored_procedure_exec_output_full_dataset_preparation(
     from google.cloud import bigquery
     import logging
 
+    from google.api_core.gapic_v1.client_info import ClientInfo
+
+    USER_AGENT_FEATURES = 'cloud-solutions/marketing-analytics-jumpstart-features-v1'
+    USER_AGENT_PROPENSITY_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-propensity-training-v1'
+    USER_AGENT_PROPENSITY_PREDICTION= 'cloud-solutions/marketing-analytics-jumpstart-propensity-prediction-v1'
+    USER_AGENT_REGRESSION_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-regression-training-v1'
+    USER_AGENT_REGRESSION_PREDICTION = 'cloud-solutions/marketing-analytics-jumpstart-regression-prediction-v1'
+    USER_AGENT_SEGMENTATION_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-segmentation-training-v1'
+    USER_AGENT_SEGMENTATION_PREDICTION = 'cloud-solutions/marketing-analytics-jumpstart-segmentation-prediction-v1'
+    USER_AGENT_VBB_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-vbb-training-v1'
+    USER_AGENT_VBB_EXPLANATION = 'cloud-solutions/marketing-analytics-jumpstart-vbb-explanation-v1'
+
+
     # Construct a BigQuery client object.
     client = bigquery.Client(
         project=project_id,
-        location=location
+        location=location,
+        client_info=ClientInfo(user_agent=USER_AGENT_SEGMENTATION_TRAINING)
     )
 
     def _create_auto_audience_segmentation_full_dataset_preparation_procedure(
@@ -1001,10 +1141,24 @@ def bq_union_predictions_tables(
     from google.cloud import bigquery
     import logging
 
+    from google.api_core.gapic_v1.client_info import ClientInfo
+
+    USER_AGENT_FEATURES = 'cloud-solutions/marketing-analytics-jumpstart-features-v1'
+    USER_AGENT_PROPENSITY_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-propensity-training-v1'
+    USER_AGENT_PROPENSITY_PREDICTION= 'cloud-solutions/marketing-analytics-jumpstart-propensity-prediction-v1'
+    USER_AGENT_REGRESSION_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-regression-training-v1'
+    USER_AGENT_REGRESSION_PREDICTION = 'cloud-solutions/marketing-analytics-jumpstart-regression-prediction-v1'
+    USER_AGENT_SEGMENTATION_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-segmentation-training-v1'
+    USER_AGENT_SEGMENTATION_PREDICTION = 'cloud-solutions/marketing-analytics-jumpstart-segmentation-prediction-v1'
+    USER_AGENT_VBB_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-vbb-training-v1'
+    USER_AGENT_VBB_EXPLANATION = 'cloud-solutions/marketing-analytics-jumpstart-vbb-explanation-v1'
+
+
     # Construct a BigQuery client object.
     client = bigquery.Client(
         project=project_id,
-        location=location
+        location=location,
+        client_info=ClientInfo(user_agent=USER_AGENT_REGRESSION_PREDICTION)
     )
 
     # Inspect the metadata set on destination_table and predictions_table
@@ -1127,7 +1281,8 @@ def bq_union_predictions_tables(
     # Reconstruct a BigQuery client object.
     client = bigquery.Client(
         project=project_id,
-        location=bq_table_regression.location
+        location=bq_table_regression.location,
+        client_info=ClientInfo(user_agent=USER_AGENT_REGRESSION_PREDICTION)
     )
     query_job = client.query(
         query=query,
@@ -1166,8 +1321,24 @@ def write_tabular_model_explanation_to_bigquery(
     from google.api_core import exceptions
     import time
 
-    client = bigquery.Client(project=project, 
-                             location=data_location)
+    from google.api_core.gapic_v1.client_info import ClientInfo
+
+    USER_AGENT_FEATURES = 'cloud-solutions/marketing-analytics-jumpstart-features-v1'
+    USER_AGENT_PROPENSITY_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-propensity-training-v1'
+    USER_AGENT_PROPENSITY_PREDICTION= 'cloud-solutions/marketing-analytics-jumpstart-propensity-prediction-v1'
+    USER_AGENT_REGRESSION_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-regression-training-v1'
+    USER_AGENT_REGRESSION_PREDICTION = 'cloud-solutions/marketing-analytics-jumpstart-regression-prediction-v1'
+    USER_AGENT_SEGMENTATION_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-segmentation-training-v1'
+    USER_AGENT_SEGMENTATION_PREDICTION = 'cloud-solutions/marketing-analytics-jumpstart-segmentation-prediction-v1'
+    USER_AGENT_VBB_TRAINING = 'cloud-solutions/marketing-analytics-jumpstart-vbb-training-v1'
+    USER_AGENT_VBB_EXPLANATION = 'cloud-solutions/marketing-analytics-jumpstart-vbb-explanation-v1'
+
+
+    client = bigquery.Client(
+        project=project, 
+        location=data_location,
+        client_info=ClientInfo(user_agent=USER_AGENT_VBB_EXPLANATION)
+    )
     
     feature_names = model_explanation.metadata['feature_names']
     values = model_explanation.metadata['values']
