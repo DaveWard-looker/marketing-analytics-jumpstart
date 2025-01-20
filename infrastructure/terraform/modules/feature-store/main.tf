@@ -120,25 +120,25 @@ resource "google_bigquery_connection" "vertex_ai_connection" {
 
 
 # This resource binds the service account to the required roles
-resource "google_project_iam_member" "vertex_ai_connection_sa_roles" {
-  depends_on = [
-    module.project_services,
-    null_resource.check_aiplatform_api,
-    google_bigquery_connection.vertex_ai_connection
-    ]
+# resource "google_project_iam_member" "vertex_ai_connection_sa_roles" {
+#   depends_on = [
+#     module.project_services,
+#     null_resource.check_aiplatform_api,
+#     google_bigquery_connection.vertex_ai_connection
+#     ]
   
-  project = null_resource.check_aiplatform_api.id != "" ? module.project_services.project_id : local.feature_store_project_id
-  member  = "serviceAccount:${google_bigquery_connection.vertex_ai_connection.cloud_resource[0].service_account_id}"
+#   project = null_resource.check_aiplatform_api.id != "" ? module.project_services.project_id : local.feature_store_project_id
+#   member  = "serviceAccount:${google_bigquery_connection.vertex_ai_connection.cloud_resource[0].service_account_id}"
 
-  for_each = toset([
-    "roles/bigquery.jobUser",
-    "roles/bigquery.dataEditor",
-    "roles/storage.admin",
-    "roles/storage.objectViewer",
-    "roles/aiplatform.user",
-    "roles/bigquery.connectionUser",
-    "roles/bigquery.connectionAdmin"
-  ])
-  role = each.key
-}
+#   for_each = toset([
+#     "roles/bigquery.jobUser",
+#     "roles/bigquery.dataEditor",
+#     "roles/storage.admin",
+#     "roles/storage.objectViewer",
+#     "roles/aiplatform.user",
+#     "roles/bigquery.connectionUser",
+#     "roles/bigquery.connectionAdmin"
+#   ])
+#   role = null
+# }
 

@@ -64,7 +64,7 @@ steps:
     - --project_id=$_GCP_PROJECT_ID
     - --location=$_BQ_LOCATION
     - --table=$_BQ_DATASET_NAME.user_dimensions
-    - --schema=sql/table/schema/user_dimensions.json
+    - --schema=sql/schema/table/user_dimensions.json
 # [END cloudbuild_cd_sql]
 
 # Substitutions to the environment variables in the above steps.

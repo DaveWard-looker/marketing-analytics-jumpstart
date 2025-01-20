@@ -227,7 +227,7 @@ def apply_config_parameters_to_all_tables(c, env_name="prod"):
     query_dict = conf['bigquery']['table']
 
     # Locate file path for all templates to be used
-    template_path = Path.joinpath(current_path,"sql","table")
+    template_path = Path.joinpath(current_path,"sql","schema","table")
     templateLoader = FileSystemLoader(searchpath=template_path)
     templateEnv = Environment(loader=templateLoader)
 

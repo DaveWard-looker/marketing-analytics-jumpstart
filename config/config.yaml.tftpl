@@ -669,7 +669,7 @@ vertex_ai:
           #Don't use when parameter `optimization_objective` is not `maximize-precision-at-recall` or `maximize-recall-at-precision`
           #optimization_objective_recall_value: 0.72
           #optimization_objective_precision_value: 0.72
-          target_column: "will_purchase"
+          target_column: "view_link"
           predefined_split_key: "data_split"
           data_source_csv_filenames: null
           training_fraction: null
@@ -1821,7 +1821,7 @@ bigquery:
       mds_dataset: "${mds_dataset}"
       stored_procedure: "auto_audience_segmentation_training_preparation"
       # The `lookback_days` parameter is the number of days to look back for training data.
-      lookback_days: 15
+      lookback_days: 365
     # This is a stored procedure that CALLs the Purchase Propensity Inference Inference Preparation stored procedure.
     invoke_purchase_propensity_inference_preparation:
       project_id: "${project_id}"
@@ -2244,7 +2244,7 @@ bigquery:
       # This parameter helps you set a maximum number of samples for training.
       samples_percentage: 10
       samples_limit: 10000
-      custom_start_date: "'2024-01-01'"
+      custom_start_date: "'2022-01-01'"
       custom_end_date: "NULL"
     # This is the stored procedure that calculates the label column for the Customer Lifetime Value use case.
     # The label represents the lifetime value revenue gain over a period of time.
@@ -2271,7 +2271,7 @@ bigquery:
       mds_project_id: "${mds_project_id}"
       mds_dataset: "${mds_dataset}"
       expiration_duration_hours: 168
-      custom_start_date: "'2023-01-01'"
+      custom_start_date: "'2022-01-01'"
       custom_end_date: "NULL"
     # This is the stored procedure that calculates the label column for the Purchase Propensity use case.
     # The label represents wether a user will make a purchase over a period of time.
@@ -2314,7 +2314,7 @@ bigquery:
       mds_project_id: "${mds_project_id}"
       mds_dataset: "${mds_dataset}"
       expiration_duration_hours: 168
-      custom_start_date: "'2023-01-01'"
+      custom_start_date: "'2022-01-01'"
       custom_end_date: "NULL"
     # This is the stored procedure that collects the features and prepare the examples rows to train a model.
     # The procedure will split the data into three splits (TRAIN, VALIDATE, TEST) and will take care of avoiding splits contamination.
@@ -2330,7 +2330,7 @@ bigquery:
       mds_project_id: "${mds_project_id}"
       mds_dataset: "${mds_dataset}"
       expiration_duration_hours: 168
-      custom_start_date: "'2023-01-01'"
+      custom_start_date: "'2022-01-01'"
       custom_end_date: "NULL"
       table_sampling_percentage: 1
       samples_limit: 10000
@@ -2483,8 +2483,8 @@ bigquery:
       feature_store_project_id: "${project_id}"
       feature_store_dataset: "feature_store"
       insert_table: "auto_audience_segmentation_inference_preparation"
-      lookback_days: 15
-      expiration_duration_hours: 12
+      lookback_days: 720
+      expiration_duration_hours: 48
     # This is the stored procedure that collects the features and prepare the examples rows to train a model.
     # The procedure will split the data into three splits (TRAIN, VALIDATE, TEST) and will take care of avoiding splits contamination.
     # There is a minimum number of examples rows of 1000 and the maximum is as much as it fits in memory, overall consensus is that for ML models
@@ -2497,11 +2497,11 @@ bigquery:
       feature_store_project_id: "${project_id}"
       feature_store_dataset: "feature_store"
       insert_table: "auto_audience_segmentation_training_preparation"
-      lookback_days: 15
-      expiration_duration_hours: 12
+      lookback_days: 720
+      expiration_duration_hours: 48
       # This parameter helps you set a maximum number of samples.
       total_samples: 100000
-      custom_start_date: "'2024-05-01'"
+      custom_start_date: "'2022-05-01'"
       custom_end_date: "NULL"
     # This procedure aggregates all the daily predictions generates into a consumable table grouped for each user.
     # This table is used for multiple Looker Studio dashboards reports. 

@@ -200,11 +200,11 @@ resource "google_logging_project_sink" "mds_daily_execution" {
   }
 }
 
-resource "google_project_iam_member" "mds_daily_execution_member" {
-  project = module.project_services.project_id
-  role    = "roles/bigquery.dataEditor"
-  member  = element(concat(google_logging_project_sink.mds_daily_execution[*].writer_identity, [""]), 0)
-}
+# resource "google_project_iam_member" "mds_daily_execution_member" {
+#   project = module.project_services.project_id
+#   role    = "roles/bigquery.dataEditor"
+#   member  = element(concat(google_logging_project_sink.mds_daily_execution[*].writer_identity, [""]), 0)
+# }
 
 resource "google_logging_project_sink" "vertex_pipeline_execution" {
   name                   = "vertex_pipeline_execution_export"
@@ -217,11 +217,11 @@ resource "google_logging_project_sink" "vertex_pipeline_execution" {
   }
 }
 
-resource "google_project_iam_member" "vertex_pipeline_execution_member" {
-  project = module.project_services.project_id
-  role    = "roles/bigquery.dataEditor"
-  member  = element(concat(google_logging_project_sink.vertex_pipeline_execution[*].writer_identity, [""]), 0)
-}
+# resource "google_project_iam_member" "vertex_pipeline_execution_member" {
+#   project = module.project_services.project_id
+#   role    = "roles/bigquery.dataEditor"
+#   member  = element(concat(google_logging_project_sink.vertex_pipeline_execution[*].writer_identity, [""]), 0)
+# }
 
 resource "google_logging_project_sink" "activation_pipeline_execution" {
   name                   = "activation_pipeline_execution_export"
@@ -234,11 +234,11 @@ resource "google_logging_project_sink" "activation_pipeline_execution" {
   }
 }
 
-resource "google_project_iam_member" "activation_pipeline_execution_member" {
-  project = module.project_services.project_id
-  role    = "roles/bigquery.dataEditor"
-  member  = element(concat(google_logging_project_sink.activation_pipeline_execution[*].writer_identity, [""]), 0)
-}
+# resource "google_project_iam_member" "activation_pipeline_execution_member" {
+#   project = module.project_services.project_id
+#   role    = "roles/bigquery.dataEditor"
+#   member  = element(concat(google_logging_project_sink.activation_pipeline_execution[*].writer_identity, [""]), 0)
+# }
 
 data "template_file" "looker_studio_dashboard_url" {
   template = file("${local.source_root_dir}/templates/looker_studio_create_dashboard_url_template.txt")

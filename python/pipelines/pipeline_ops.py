@@ -17,6 +17,7 @@ from os import name
 from tracemalloc import start
 
 import pip
+import os
 from kfp import compiler
 from google.cloud.aiplatform.pipeline_jobs import PipelineJob, _set_enable_caching_value
 from google.cloud.aiplatform import TabularDataset, Artifact
@@ -25,13 +26,17 @@ import logging
 import json
 import yaml
 import google.auth.credentials as credentials
-from kfp.registry import RegistryClient
+from kfp.registry import RegistryClient, ApiAuth
 from google.cloud import aiplatform, storage
 import shutil
 import pathlib
 import requests
 import google.auth
-
+from google.auth import default
+from google.oauth2 import service_account
+from google.auth import impersonated_credentials
+from google.auth.transport.requests import Request
+from google.oauth2.service_account import Credentials
 
 def substitute_pipeline_params(
     pipeline_params: Dict[str, Any],
@@ -560,7 +565,7 @@ def upload_pipeline_artefact_registry(
     logging.info(f"Uploading pipeline to {region}-kfp.pkg.dev/{project_id}/{repo_name}")
 
     host = f"https://{region}-kfp.pkg.dev/{project_id}/{repo_name}"
-    client = RegistryClient(host=host)
+    client = RegistryClient(host=host,auth=ApiAuth(get_gcp_bearer_token()))
     response = client.upload_pipeline(
         file_name=template_path,
         tags=tags,
@@ -592,7 +597,7 @@ def delete_pipeline_artefact_registry(
     """
 
     host = f"https://{region}-kfp.pkg.dev/{project_id}/{repo_name}"
-    client = RegistryClient(host=host)
+    client = RegistryClient(host=host,auth=ApiAuth(get_gcp_bearer_token()))
     response = client.delete_package(package_name=package_name)
     logging.info(f"Pipeline deleted : {package_name}")
     logging.info(response)
@@ -604,26 +609,48 @@ def get_gcp_bearer_token() -> str:
     Retrieves a bearer token for Google Cloud Platform (GCP) authentication.
     creds.valid is False, and creds.token is None
     Need to refresh credentials to populate those
-
     Returns:
         A string containing the bearer token.
 
     Raises:
         Exception: If an error occurs while retrieving the bearer token.
     """
+    import google
+    from google.auth import impersonated_credentials
+    import google.auth.transport.requests
+    impersonated_service_account = 'adwords@dward-maj-testing.iam.gserviceaccount.com'
+    scope = 'https://www.googleapis.com/auth/cloud-platform'
+    target_audience = 'iap.googleapis.com'
+    # Construct the GoogleCredentials object which obtains the default configuration from your
+    # working environment.
+    credentials, project_id = google.auth.default()
 
-    # Get the default credentials for the current environment.
-    creds, project = google.auth.default()
+    # Create the impersonated credential.
+    target_credentials = impersonated_credentials.Credentials(
+        source_credentials=credentials,
+        target_principal=impersonated_service_account,
+        # delegates: The chained list of delegates required to grant the final accessToken.
+        # For more information, see:
+        # https://cloud.google.com/iam/docs/create-short-lived-credentials-direct#sa-credentials-permissions
+        # Delegate is NOT USED here.
+        # delegates=[],
+        target_scopes=[scope],
+        lifetime=300)
 
-    # Refresh the credentials to ensure they are valid.
-    creds.refresh(google.auth.transport.requests.Request())
+    # Set the impersonated credential, target audience and token options.
+    # id_creds = impersonated_credentials.IDTokenCredentials(
+    #     target_credentials,
+    #     target_audience=target_audience,
+    #     include_email=True)
 
-    # Extract the bearer token from the refreshed credentials.
-    bearer_token = creds.token
-
-    # Return the bearer token.
-    return bearer_token
-
+    # Get the ID token.
+    # Once you've obtained the ID token, use it to make an authenticated call
+    # to the target audience.
+    request = google.auth.transport.requests.Request()
+    target_credentials.refresh(request)
+    # token = target_credentials.token
+    # print("Generated ID token: " + str(token))
+    return str(target_credentials.token) 
 
 # Function to schedule the pipeline.
 def schedule_pipeline(

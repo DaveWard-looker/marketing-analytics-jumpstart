@@ -13,11 +13,16 @@
 # limitations under the License.
 
 # This resource creates a service account to run the Vertex AI pipelines
-resource "google_service_account" "service_account" {
-  project      = null_resource.check_aiplatform_api.id != "" ? module.project_services.project_id : local.pipeline_vars.project_id
-  account_id   = local.pipeline_vars.service_account_id
-  display_name = local.pipeline_vars.service_account_id
-  description  = "Service Account to run Vertex AI Pipelines"
+# resource "google_service_account" "service_account" {
+#   project      = null_resource.check_aiplatform_api.id != "" ? module.project_services.project_id : local.pipeline_vars.project_id
+#   account_id   = local.pipeline_vars.service_account_id
+#   display_name = local.pipeline_vars.service_account_id
+#   description  = "Service Account to run Vertex AI Pipelines"
+# }
+
+locals {
+  vertexai_pipelines_sa_email = "vertex-pipelines-sa@${module.project_services.project_id}.iam.gserviceaccount.com"
+  dataflow_worker_sa_email = "df-worker@${module.project_services.project_id}.iam.gserviceaccount.com"
 }
 
 # Wait for the pipelines service account to be created
@@ -48,55 +53,55 @@ resource "null_resource" "wait_for_vertex_pipelines_sa_creation" {
 
 
 # This resource binds the service account to the required roles
-resource "google_project_iam_member" "pipelines_sa_roles" {
-  depends_on = [
-    module.project_services,
-    null_resource.check_aiplatform_api,
-    null_resource.wait_for_vertex_pipelines_sa_creation
-    ]
+# resource "google_project_iam_member" "pipelines_sa_roles" {
+#   depends_on = [
+#     module.project_services,
+#     null_resource.check_aiplatform_api,
+#     null_resource.wait_for_vertex_pipelines_sa_creation
+#     ]
   
-  project = null_resource.check_aiplatform_api.id != "" ? module.project_services.project_id : local.pipeline_vars.project_id
-  member  = "serviceAccount:${google_service_account.service_account.email}"
+#   project = null_resource.check_aiplatform_api.id != "" ? module.project_services.project_id : local.pipeline_vars.project_id
+#   member  = "serviceAccount:${locals.vertexai_pipelines_sa_email}"
 
-  for_each = toset([
-    "roles/iap.tunnelResourceAccessor",
-    "roles/compute.osLogin",
-    "roles/bigquery.jobUser",
-    "roles/bigquery.dataEditor",
-    "roles/storage.admin",
-    "roles/aiplatform.user",
-    "roles/artifactregistry.reader",
-    "roles/pubsub.publisher",
-    "roles/dataflow.developer",
-    "roles/bigquery.connectionUser"
-  ])
-  role = each.key
-}
+#   for_each = toset([
+#     "roles/iap.tunnelResourceAccessor",
+#     "roles/compute.osLogin",
+#     "roles/bigquery.jobUser",
+#     "roles/bigquery.dataEditor",
+#     "roles/storage.admin",
+#     "roles/aiplatform.user",
+#     "roles/artifactregistry.reader",
+#     "roles/pubsub.publisher",
+#     "roles/dataflow.developer",
+#     "roles/bigquery.connectionUser"
+#   ])
+#   role = each.key
+# }
 
 # This resource binds the service account to the required roles in the mds project
-resource "google_project_iam_member" "pipelines_sa_mds_project_roles" {
-  depends_on = [
-    module.project_services,
-    null_resource.check_aiplatform_api,
-    null_resource.wait_for_vertex_pipelines_sa_creation
-    ]
+# resource "google_project_iam_member" "pipelines_sa_mds_project_roles" {
+#   depends_on = [
+#     module.project_services,
+#     null_resource.check_aiplatform_api,
+#     null_resource.wait_for_vertex_pipelines_sa_creation
+#     ]
   
-  project = null_resource.check_bigquery_api.id != "" ? module.project_services.project_id : local.pipeline_vars.project_id
-  member  = "serviceAccount:${google_service_account.service_account.email}"
+#   project = null_resource.check_bigquery_api.id != "" ? module.project_services.project_id : local.pipeline_vars.project_id
+#   member  = "serviceAccount:${google_service_account.service_account.email}"
 
-  for_each = toset([
-    "roles/bigquery.dataViewer"
-  ])
-  role = each.key
-}
+#   for_each = toset([
+#     "roles/bigquery.dataViewer"
+#   ])
+#   role = each.key
+# }
 
 # This resource creates a service account to run the dataflow jobs
-resource "google_service_account" "dataflow_worker_service_account" {
-  project      = null_resource.check_dataflow_api.id != "" ? module.project_services.project_id : local.pipeline_vars.project_id
-  account_id   = local.dataflow_vars.worker_service_account_id
-  display_name = local.dataflow_vars.worker_service_account_id
-  description  = "Service Account to run Dataflow jobs"
-}
+# resource "google_service_account" "dataflow_worker_service_account" {
+#   project      = null_resource.check_dataflow_api.id != "" ? module.project_services.project_id : local.pipeline_vars.project_id
+#   account_id   = local.dataflow_vars.worker_service_account_id
+#   display_name = local.dataflow_vars.worker_service_account_id
+#   description  = "Service Account to run Dataflow jobs"
+# }
 
 # Wait for the dataflow worker service account to be created
 resource "null_resource" "wait_for_dataflow_worker_sa_creation" {
@@ -125,38 +130,38 @@ resource "null_resource" "wait_for_dataflow_worker_sa_creation" {
 }
 
 # This resource binds the service account to the required roles
-resource "google_project_iam_member" "dataflow_worker_sa_roles" {
-  depends_on = [
-    module.project_services,
-    null_resource.check_dataflow_api,
-    null_resource.wait_for_dataflow_worker_sa_creation
-    ]
+# resource "google_project_iam_member" "dataflow_worker_sa_roles" {
+#   depends_on = [
+#     module.project_services,
+#     null_resource.check_dataflow_api,
+#     null_resource.wait_for_dataflow_worker_sa_creation
+#     ]
   
-  project = null_resource.check_dataflow_api.id != "" ? module.project_services.project_id : local.pipeline_vars.project_id
-  member  = "serviceAccount:${google_service_account.dataflow_worker_service_account.email}"
+#   project = null_resource.check_dataflow_api.id != "" ? module.project_services.project_id : local.pipeline_vars.project_id
+#   member  = "serviceAccount:${google_service_account.dataflow_worker_service_account.email}"
 
-  for_each = toset([
-    "roles/dataflow.worker",
-    "roles/bigquery.dataEditor",
-    "roles/bigquery.jobUser",
-    "roles/storage.objectAdmin",
-  ])
-  role = each.key
-}
+#   for_each = toset([
+#     "roles/dataflow.worker",
+#     "roles/bigquery.dataEditor",
+#     "roles/bigquery.jobUser",
+#     "roles/storage.objectAdmin",
+#   ])
+#   role = each.key
+# }
 
 # This resource binds the service account to the required roles
 # Allow pipelines SA service account use dataflow worker SA
-resource "google_service_account_iam_member" "dataflow_sa_iam" {
-  depends_on = [
-    module.project_services,
-    null_resource.check_dataflow_api,
-    null_resource.wait_for_dataflow_worker_sa_creation
-    ]
+# resource "google_service_account_iam_member" "dataflow_sa_iam" {
+#   depends_on = [
+#     module.project_services,
+#     null_resource.check_dataflow_api,
+#     null_resource.wait_for_dataflow_worker_sa_creation
+#     ]
   
-  service_account_id = "projects/${module.project_services.project_id}/serviceAccounts/${google_service_account.dataflow_worker_service_account.email}"
-  role               = "roles/iam.serviceAccountUser"
-  member             = "serviceAccount:${google_service_account.service_account.email}"
-}
+#   service_account_id = "projects/${module.project_services.project_id}/serviceAccounts/${local.dataflow_worker_sa_email}"
+#   role               = "roles/iam.serviceAccountUser"
+#   member             = "serviceAccount:${google_service_account.service_account.email}"
+# }
 
 # This resource creates a Cloud Storage Bucket for the pipeline artifacts
 resource "google_storage_bucket" "pipelines_bucket" {

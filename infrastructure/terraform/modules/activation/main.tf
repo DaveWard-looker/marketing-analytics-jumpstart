@@ -318,35 +318,35 @@ module "bigquery" {
 # This resouce calls a python command defined inside the module ga4_setup that is responsible for creating
 # all required custom events in the Google Analytics 4 property.
 # Check the python file ga4-setup/setup.py for more information.
-resource "null_resource" "create_custom_events" {
-  triggers = {
-    services_enabled_project = null_resource.check_analyticsadmin_api.id != "" ? module.project_services.project_id : var.project_id
-    source_contents_hash     = local.activation_type_configuration_file_content_hash
-  }
-  provisioner "local-exec" {
-    command     = <<-EOT
-    ${local.poetry_run_alias} ga4-setup --ga4_resource=custom_events --ga4_property_id=${var.ga4_property_id} --ga4_stream_id=${var.ga4_stream_id}
-    EOT
-    working_dir = local.source_root_dir
-  }
-}
+# resource "null_resource" "create_custom_events" {
+#   triggers = {
+#     services_enabled_project = null_resource.check_analyticsadmin_api.id != "" ? module.project_services.project_id : var.project_id
+#     source_contents_hash     = local.activation_type_configuration_file_content_hash
+#   }
+#   provisioner "local-exec" {
+#     command     = <<-EOT
+#     ${local.poetry_run_alias} ga4-setup --ga4_resource=custom_events --ga4_property_id=${var.ga4_property_id} --ga4_stream_id=${var.ga4_stream_id}
+#     EOT
+#     working_dir = local.source_root_dir
+#   }
+# }
 
 # This resource calls a python command defines inside the module ga4_setup that is responsible for creating
 # all required custom events in the Google Analytics 4 property.
 # Check the python file ga4_setup/setup.py for more information.
-resource "null_resource" "create_custom_dimensions" {
-  triggers = {
-    services_enabled_project = null_resource.check_analyticsadmin_api.id != "" ? module.project_services.project_id : var.project_id
-    #source_activation_type_configuration_hash = local.activation_type_configuration_file_content_hash 
-    #source_activation_application_python_hash = local.activation_application_content_hash
-  }
-  provisioner "local-exec" {
-    command     = <<-EOT
-    ${local.poetry_run_alias} ga4-setup --ga4_resource=custom_dimensions --ga4_property_id=${var.ga4_property_id} --ga4_stream_id=${var.ga4_stream_id}
-    EOT
-    working_dir = local.source_root_dir
-  }
-}
+# resource "null_resource" "create_custom_dimensions" {
+#   triggers = {
+#     services_enabled_project = null_resource.check_analyticsadmin_api.id != "" ? module.project_services.project_id : var.project_id
+#     #source_activation_type_configuration_hash = local.activation_type_configuration_file_content_hash 
+#     #source_activation_application_python_hash = local.activation_application_content_hash
+#   }
+#   provisioner "local-exec" {
+#     command     = <<-EOT
+#     ${local.poetry_run_alias} ga4-setup --ga4_resource=custom_dimensions --ga4_property_id=${var.ga4_property_id} --ga4_stream_id=${var.ga4_stream_id}
+#     EOT
+#     working_dir = local.source_root_dir
+#   }
+# }
 
 # This resource creates an Artifact Registry repository for the docker images used by the Activation Application.
 resource "google_artifact_registry_repository" "activation_repository" {
@@ -357,81 +357,82 @@ resource "google_artifact_registry_repository" "activation_repository" {
   format        = "DOCKER"
 }
 
-module "pipeline_service_account" {
-  source     = "terraform-google-modules/service-accounts/google"
-  version    = "~> 3.0"
-  project_id = null_resource.check_dataflow_api.id != "" ? module.project_services.project_id : var.project_id
-  prefix     = local.app_prefix
-  names      = [local.pipeline_service_account_name]
-  project_roles = [
-    "${module.project_services.project_id}=>roles/dataflow.admin",
-    "${module.project_services.project_id}=>roles/dataflow.worker",
-    "${module.project_services.project_id}=>roles/bigquery.dataEditor",
-    "${module.project_services.project_id}=>roles/bigquery.jobUser",
-    "${module.project_services.project_id}=>roles/artifactregistry.writer", 
-  ]
-  display_name = "Dataflow worker Service Account"
-  description  = "Activation Dataflow worker Service Account"
-}
+# module "pipeline_service_account" {
+#   source     = "terraform-google-modules/service-accounts/google"
+#   version    = "~> 3.0"
+#   project_id = null_resource.check_dataflow_api.id != "" ? module.project_services.project_id : var.project_id
+#   prefix     = local.app_prefix
+#   names      = [local.pipeline_service_account_name]
+#   project_roles = [
+#     "${module.project_services.project_id}=>roles/dataflow.admin",
+#     "${module.project_services.project_id}=>roles/dataflow.worker",
+#     "${module.project_services.project_id}=>roles/bigquery.dataEditor",
+#     "${module.project_services.project_id}=>roles/bigquery.jobUser",
+#     "${module.project_services.project_id}=>roles/artifactregistry.writer", 
+#   ]
+#   display_name = "Dataflow worker Service Account"
+#   description  = "Activation Dataflow worker Service Account"
+#   use_existing_service_account = true
+# }
 
-module "trigger_function_account" {
-  source     = "terraform-google-modules/service-accounts/google"
-  version    = "~> 3.0"
-  project_id = null_resource.check_pubsub_api.id != "" ? module.project_services.project_id : var.project_id
-  prefix     = local.app_prefix
-  names      = [local.trigger_function_account_name]
-  project_roles = [
-    "${module.project_services.project_id}=>roles/secretmanager.secretAccessor",
-    "${module.project_services.project_id}=>roles/dataflow.admin",
-    "${module.project_services.project_id}=>roles/dataflow.worker",
-    "${module.project_services.project_id}=>roles/bigquery.dataEditor",
-    "${module.project_services.project_id}=>roles/pubsub.editor",
-    "${module.project_services.project_id}=>roles/storage.admin",
-    "${module.project_services.project_id}=>roles/artifactregistry.reader",
-    "${module.project_services.project_id}=>roles/iam.serviceAccountUser",
-  ]
-  display_name = "Cloud Build Job Service Account"
-  description  = "Service Account used to submit job the cloud build job"
-}
+# module "trigger_function_account" {
+#   source     = "terraform-google-modules/service-accounts/google"
+#   version    = "~> 3.0"
+#   project_id = null_resource.check_pubsub_api.id != "" ? module.project_services.project_id : var.project_id
+#   prefix     = local.app_prefix
+#   names      = [local.trigger_function_account_name]
+#   project_roles = [
+#     "${module.project_services.project_id}=>roles/secretmanager.secretAccessor",
+#     "${module.project_services.project_id}=>roles/dataflow.admin",
+#     "${module.project_services.project_id}=>roles/dataflow.worker",
+#     "${module.project_services.project_id}=>roles/bigquery.dataEditor",
+#     "${module.project_services.project_id}=>roles/pubsub.editor",
+#     "${module.project_services.project_id}=>roles/storage.admin",
+#     "${module.project_services.project_id}=>roles/artifactregistry.reader",
+#     "${module.project_services.project_id}=>roles/iam.serviceAccountUser",
+#   ]
+#   display_name = "Cloud Build Job Service Account"
+#   description  = "Service Account used to submit job the cloud build job"
+# }
 
 # This an external data that retrieves information about the Google Analytics 4 property using 
 # a python command defined in the module ga4_setup.
 # This informatoin can then be used in other parts of the Terraform configuration to access the retrieved information.
-data "external" "ga4_measurement_properties" {
-  program     = ["bash", "-c", "${local.poetry_run_alias} ga4-setup --ga4_resource=measurement_properties --ga4_property_id=${var.ga4_property_id} --ga4_stream_id=${var.ga4_stream_id}"]
-  working_dir = local.source_root_dir
-  # The count attribute specifies how many times the external data source should be executed.
-  # This means that the external data source will be executed only if either the 
-  # var.ga4_measurement_id or var.ga4_measurement_secret variable is not set.
-  count       = (var.ga4_measurement_id == null || var.ga4_measurement_secret == null || var.ga4_measurement_id == "" || var.ga4_measurement_secret == "") ? 1 : 0
+# data "external" "ga4_measurement_properties" {
+#   program     = ["bash", "-c", "${local.poetry_run_alias} ga4-setup --ga4_resource=measurement_properties --ga4_property_id=${var.ga4_property_id} --ga4_stream_id=${var.ga4_stream_id}"]
+#   working_dir = local.source_root_dir
+#   # The count attribute specifies how many times the external data source should be executed.
+#   # This means that the external data source will be executed only if either the 
+#   # var.ga4_measurement_id or var.ga4_measurement_secret variable is not set.
+#   count       = (var.ga4_measurement_id == null || var.ga4_measurement_secret == null || var.ga4_measurement_id == "" || var.ga4_measurement_secret == "") ? 1 : 0
 
-  depends_on = [
-    module.project_services
-  ]
-}
+#   depends_on = [
+#     module.project_services
+#   ]
+# }
 
 # This module stores the values ga4-measurement-id and ga4-measurement-secret in Google Cloud Secret Manager.
-module "secret_manager" {
-  source     = "GoogleCloudPlatform/secret-manager/google"
-  version    = "~> 0.1"
-  project_id = null_resource.check_secretmanager_api.id != "" ? module.project_services.project_id : var.project_id
-  secrets = [
-    {
-      name                  = "ga4-measurement-id"
-      secret_data           = (var.ga4_measurement_id == null || var.ga4_measurement_secret == null) ? data.external.ga4_measurement_properties[0].result["measurement_id"] : var.ga4_measurement_id
-      automatic_replication = true
-    },
-    {
-      name                  = "ga4-measurement-secret"
-      secret_data           = (var.ga4_measurement_id == null || var.ga4_measurement_secret == null) ? data.external.ga4_measurement_properties[0].result["measurement_secret"] : var.ga4_measurement_secret
-      automatic_replication = true
-    },
-  ]
+# module "secret_manager" {
+#   source     = "GoogleCloudPlatform/secret-manager/google"
+#   version    = "~> 0.1"
+#   project_id = null_resource.check_secretmanager_api.id != "" ? module.project_services.project_id : var.project_id
+#   secrets = [
+#     {
+#       name                  = "ga4-measurement-id"
+#       secret_data           = (var.ga4_measurement_id == null || var.ga4_measurement_secret == null) ? data.external.ga4_measurement_properties[0].result["measurement_id"] : var.ga4_measurement_id
+#       automatic_replication = true
+#     },
+#     {
+#       name                  = "ga4-measurement-secret"
+#       secret_data           = (var.ga4_measurement_id == null || var.ga4_measurement_secret == null) ? data.external.ga4_measurement_properties[0].result["measurement_secret"] : var.ga4_measurement_secret
+#       automatic_replication = true
+#     },
+#   ]
 
-  depends_on = [
-    data.external.ga4_measurement_properties
-  ]
-}
+#   # depends_on = [
+#   #   data.external.ga4_measurement_properties
+#   # ]
+# }
 
 # This module creates a Cloud Storage bucket to be used by the Activation Application
 module "pipeline_bucket" {
@@ -460,60 +461,60 @@ module "pipeline_bucket" {
     member = "serviceAccount:${local.pipeline_service_account_email}"
   }]
 
-  depends_on = [
-    module.pipeline_service_account.email
-  ]
+  # depends_on = [
+  #   module.pipeline_service_account.email
+  # ]
 }
 
 # This resource binds the service account to the required roles
-resource "google_project_iam_member" "cloud_build_job_service_account" {
-  depends_on = [
-    module.project_services,
-    null_resource.check_artifactregistry_api,
-    data.google_project.project,
-    ]
+# resource "google_project_iam_member" "cloud_build_job_service_account" {
+#   depends_on = [
+#     module.project_services,
+#     null_resource.check_artifactregistry_api,
+#     data.google_project.project,
+#     ]
   
-  project = null_resource.check_artifactregistry_api.id != "" ? module.project_services.project_id : var.project_id
-  member  = "serviceAccount:${var.project_number}-compute@developer.gserviceaccount.com"
+#   project = null_resource.check_artifactregistry_api.id != "" ? module.project_services.project_id : var.project_id
+#   member  = "serviceAccount:${var.project_number}-compute@developer.gserviceaccount.com"
 
-  for_each = toset([
-    "roles/cloudbuild.serviceAgent",
-    "roles/cloudbuild.builds.builder",
-    "roles/cloudbuild.integrations.owner",
-    "roles/logging.logWriter",
-    "roles/logging.admin",
-    "roles/storage.admin",
-    "roles/iam.serviceAccountTokenCreator",
-    "roles/iam.serviceAccountUser",
-    "roles/iam.serviceAccountAdmin",
-    "roles/cloudfunctions.developer",
-    "roles/run.admin",
-    "roles/appengine.appAdmin",
-    "roles/container.developer",
-    "roles/compute.instanceAdmin.v1",
-    "roles/firebase.admin",
-    "roles/cloudkms.cryptoKeyDecrypter",
-    "roles/secretmanager.secretAccessor",
-    "roles/cloudbuild.workerPoolUser",
-    "roles/cloudbuild.serviceAgent",
-    "roles/cloudbuild.builds.editor",
-    "roles/cloudbuild.builds.viewer",
-    "roles/cloudbuild.builds.approver",
-    "roles/cloudbuild.integrations.viewer",
-    "roles/cloudbuild.integrations.editor",
-    "roles/cloudbuild.connectionViewer",
-    "roles/cloudbuild.connectionAdmin",
-    "roles/cloudbuild.readTokenAccessor",
-    "roles/cloudbuild.tokenAccessor",
-    "roles/cloudbuild.workerPoolOwner",
-    "roles/cloudbuild.workerPoolEditor",
-    "roles/cloudbuild.workerPoolViewer",
-    "roles/artifactregistry.admin",
-    "roles/viewer",
-    "roles/owner",
-  ])
-  role = each.key
-}
+#   for_each = toset([
+#     "roles/cloudbuild.serviceAgent",
+#     "roles/cloudbuild.builds.builder",
+#     "roles/cloudbuild.integrations.owner",
+#     "roles/logging.logWriter",
+#     "roles/logging.admin",
+#     "roles/storage.admin",
+#     "roles/iam.serviceAccountTokenCreator",
+#     "roles/iam.serviceAccountUser",
+#     "roles/iam.serviceAccountAdmin",
+#     "roles/cloudfunctions.developer",
+#     "roles/run.admin",
+#     "roles/appengine.appAdmin",
+#     "roles/container.developer",
+#     "roles/compute.instanceAdmin.v1",
+#     "roles/firebase.admin",
+#     "roles/cloudkms.cryptoKeyDecrypter",
+#     "roles/secretmanager.secretAccessor",
+#     "roles/cloudbuild.workerPoolUser",
+#     "roles/cloudbuild.serviceAgent",
+#     "roles/cloudbuild.builds.editor",
+#     "roles/cloudbuild.builds.viewer",
+#     "roles/cloudbuild.builds.approver",
+#     "roles/cloudbuild.integrations.viewer",
+#     "roles/cloudbuild.integrations.editor",
+#     "roles/cloudbuild.connectionViewer",
+#     "roles/cloudbuild.connectionAdmin",
+#     "roles/cloudbuild.readTokenAccessor",
+#     "roles/cloudbuild.tokenAccessor",
+#     "roles/cloudbuild.workerPoolOwner",
+#     "roles/cloudbuild.workerPoolEditor",
+#     "roles/cloudbuild.workerPoolViewer",
+#     "roles/artifactregistry.admin",
+#     "roles/viewer",
+#     "roles/owner",
+#   ])
+#   role = each.key
+# }
 
 data "google_project" "project" {
   project_id    = null_resource.check_cloudbuild_api != "" ? module.project_services.project_id : var.project_id
@@ -549,8 +550,8 @@ module "build_logs_bucket" {
   ]
 
   depends_on = [
-    data.google_project.project,
-    google_project_iam_member.cloud_build_job_service_account
+    data.google_project.project
+    # google_project_iam_member.cloud_build_job_service_account
   ]
 }
 
@@ -743,9 +744,9 @@ module "function_bucket" {
     member = "serviceAccount:${local.trigger_function_account_email}"
   }]
 
-  depends_on = [
-    module.trigger_function_account.email
-  ]
+  # depends_on = [
+  #   module.trigger_function_account.email
+  # ]
 }
 
 # This resource creates a bucket object using as content the activation_trigger_archive zip file.
@@ -788,7 +789,7 @@ resource "google_cloudfunctions2_function" "activation_trigger_cf" {
     max_instance_count    = 3
     timeout_seconds       = 60
     ingress_settings      = "ALLOW_INTERNAL_ONLY"
-    service_account_email = module.trigger_function_account.email
+    service_account_email = local.trigger_function_account_email
     environment_variables = {
       ACTIVATION_PROJECT            = module.project_services.project_id
       ACTIVATION_REGION             = var.location
@@ -796,21 +797,21 @@ resource "google_cloudfunctions2_function" "activation_trigger_cf" {
       TEMPLATE_FILE_GCS_LOCATION    = "gs://${module.pipeline_bucket.name}/dataflow/templates/${local.activation_container_image_id}.json"
       PIPELINE_TEMP_LOCATION        = "gs://${module.pipeline_bucket.name}/tmp/"
       LOG_DATA_SET                  = module.bigquery.bigquery_dataset.dataset_id
-      PIPELINE_WORKER_EMAIL         = module.pipeline_service_account.email
+      PIPELINE_WORKER_EMAIL         = local.pipeline_service_account_email
     }
     # Sets the environment variables from the secrets stored on Secret Manager
-    secret_environment_variables {
-      project_id = null_resource.check_cloudfunctions_api.id != "" ? module.project_services.project_id : var.project_id
-      key        = "GA4_MEASUREMENT_ID"
-      secret     = split("/", module.secret_manager.secret_names[0])[3]
-      version    = split("/", module.secret_manager.secret_versions[0])[5]
-    }
-    secret_environment_variables {
-      project_id = null_resource.check_cloudfunctions_api.id != "" ? module.project_services.project_id : var.project_id
-      key        = "GA4_MEASUREMENT_SECRET"
-      secret     = split("/", module.secret_manager.secret_names[1])[3]
-      version    = split("/", module.secret_manager.secret_versions[1])[5]
-    }
+    # secret_environment_variables {
+    #   project_id = null_resource.check_cloudfunctions_api.id != "" ? module.project_services.project_id : var.project_id
+    #   key        = "GA4_MEASUREMENT_ID"
+    #   secret     = split("/", module.secret_manager.secret_names[0])[3]
+    #   version    = split("/", module.secret_manager.secret_versions[0])[5]
+    # }
+    # secret_environment_variables {
+    #   project_id = null_resource.check_cloudfunctions_api.id != "" ? module.project_services.project_id : var.project_id
+    #   key        = "GA4_MEASUREMENT_SECRET"
+    #   secret     = split("/", module.secret_manager.secret_names[1])[3]
+    #   version    = split("/", module.secret_manager.secret_versions[1])[5]
+    # }
   }
   # lifecycle configuration ignores the changes to the source zip file
   lifecycle {

@@ -20,7 +20,7 @@ resource "google_project_iam_member" "email-role" {
     "roles/dataform.editor"
   ])
   role    = each.key
-  member  = "user:${var.project_owner_email}"
+  member  = "serviceAccount:${var.project_owner_email}"
   project = null_resource.check_dataform_api.id != "" ?  module.data_processing_project_services.project_id : data.google_project.data_processing.project_id
 }
 

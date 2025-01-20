@@ -24,7 +24,7 @@ steps:
   - --project_id=$_GCP_PROJECT_ID
   - --dataset_id=$_BQ_DATASET_NAME
   - --table=test_dataset.bobs_from_builder
-  - sql/table/schema/user-scoped-metrics.json
+  - sql/schema/table/user_scoped_metrics.json
   - --location=US
 # [END cloudbuild_cd]
 
